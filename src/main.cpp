@@ -6,6 +6,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define SAVE_FILE_DIR "/tmp/"
+#define PORT 1616
+
 std::vector<std::string> logs;
 
 void add_log(const std::string& message) {
@@ -26,6 +29,7 @@ int main() {
     crow::SimpleApp app;
 
     // Создание директории tmp
+    //на тестах использовал локальную папку
     mkdir("tmp", 0755);
 
     CROW_ROUTE(app, "/info")
@@ -39,7 +43,7 @@ int main() {
                 ).count()
             );
             
-            std::ofstream file("tmp/" + filename);
+            std::ofstream file(SAVE_FILE_DIR + filename);
             file << req.body;
             file.close();
             
@@ -63,5 +67,5 @@ int main() {
     });
 
     add_log("Service started");
-    app.port(1616).multithreaded().run();
+    app.port(PORT).multithreaded().run();
 }
