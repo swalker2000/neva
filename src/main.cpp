@@ -33,27 +33,28 @@ int main() {
     mkdir("tmp", 0755);
 
     CROW_ROUTE(app, "/info")
-    .methods("GET"_method, "POST"_method)
+    .methods("GET"_method)
     ([](const crow::request& req){
-        if (req.method == "POST"_method) {
-            // Обработка загрузки файла
-            std::string filename = "file_" + std::to_string(
-                std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch()
-                ).count()
-            );
-            
-            std::ofstream file(SAVE_FILE_DIR + filename);
-            file << req.body;
-            file.close();
-            
-            add_log("File uploaded: " + filename);
-            return crow::response(200, "File uploaded");
-        }
-        else {
             add_log("GET /info");
             return crow::response(200, "NO_ERRORS");
-        }
+    });
+
+    CROW_ROUTE(app, "/upload")
+    .methods("POST"_method)
+    ([](const crow::request& req){
+        // Обработка загрузки файла
+        std::string filename = "file_" + std::to_string(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+            ).count()
+        );
+            
+        std::ofstream file(SAVE_FILE_DIR + filename);
+        file << req.body;
+        file.close();
+            
+        add_log("File uploaded: " + filename);
+        return crow::response(200, "File uploaded");
     });
 
     CROW_ROUTE(app, "/log")
