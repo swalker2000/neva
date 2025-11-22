@@ -16,7 +16,15 @@ void add_log(const std::string& message) {
     auto time_t = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;
     ss << std::put_time(std::localtime(&time_t), "%Y-%m-%d %X") << " | " << message;
-    logs.push_back(ss.str());
+    
+    std::string log_entry = ss.str();
+    
+    // Ограничиваем длину лога до 100 символов
+    if (log_entry.length() > 100) {
+        log_entry = log_entry.substr(0, 97) + "...";
+    }
+    
+    logs.push_back(log_entry);
 }
 
 int main() {
