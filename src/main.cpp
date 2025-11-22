@@ -8,7 +8,7 @@
 
 #define SAVE_FILE_DIR "/tmp/"
 #define PORT 1616
-#define MAX_LOG_LEN 100
+#define MAX_LOG_LEN 32
 
 std::vector<std::string> logs;
 
@@ -20,12 +20,11 @@ void add_log(const std::string& message) {
     
     std::string log_entry = ss.str();
     
-    // Ограничиваем длину лога до 100 символов
-    if (log_entry.length() > MAX_LOG_LEN) {
-        log_entry = log_entry.substr(log_entry.length()-MAX_LOG_LEN,  log_entry.length());
-    }
-    
     logs.push_back(log_entry);
+
+    if (logs.size() > MAX_LOG_LEN) {
+        logs.erase(logs.begin()); // Удаляем самый старый элемент
+    }
 }
 
 int main() {
